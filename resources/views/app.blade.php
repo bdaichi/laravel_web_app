@@ -1,4 +1,4 @@
-# views/app.blade.php
+
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -22,7 +22,6 @@
 </head>
 <body>
     <div id="app">
-    # id="app"の中身を空する変更
     </div>
 </body>
 </html>
