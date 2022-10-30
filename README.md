@@ -1,7 +1,8 @@
 ## 環境構築
 
 **コマンド**
-`composer create-project "laravel/laravel=8.4(バージョン)" laravel-react-project(プロジェクト名) --prefer-dist`
+
+-   `composer create-project "laravel/laravel=8.4(バージョン)" laravel-react-project(プロジェクト名) --prefer-dist`
 
 参考記事共
 本当にありがとうございました。
