@@ -11,12 +11,29 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import purple from "@material-ui/core/colors/purple";
 
-import axios from "axios"; //追記する
+import axios from "axios";
+
+import PostForm from "../components/PostForm";
 
 function Home() {
     const classes = useStyles();
 
     const [posts, setPosts] = useState([]);
+
+    const [taskName, setTaskName] = useState("");
+    const [taskContent, setTaskContent] = useState("");
+
+    useEffect(() => {
+        axios
+            .get("/api/post/fetchPosts")
+            .then((response) => {
+                setPosts(response.data); //バックエンドから返ってきたデータでpostsを更新する
+                console.log(response.data); //取得データ確認用のconsole.log()
+            })
+            .catch(() => {
+                console.log("通信に失敗しました");
+            });
+    }, []);
 
     const rows = posts.map((post) => {
         return {
@@ -35,17 +52,30 @@ function Home() {
         };
     });
 
-    useEffect(() => {
-        axios
-            .get("/api/posts")
-            .then((response) => {
-                setPosts(response.data); //バックエンドから返ってきたデータでpostsを更新する
-                console.log(response.data); //取得データ確認用のconsole.log()
+    const createPost = async () => {
+        // 空だと弾く;
+        if (taskName == "" && taskContent == "") {
+            return;
+        }
+        //入力値を投げる
+        await axios
+            .post("/api/post/create", {
+                name: taskName,
+                content: taskContent,
             })
-            .catch(() => {
-                console.log("通信に失敗しました");
+            .then((res) => {
+                //戻り値をtodosにセット
+                console.log("createPost", res.data);
+                const tempPosts = posts;
+                tempPosts.push(res.data);
+                setPosts(tempPosts);
+                setTaskName("");
+                setTaskContent("");
+            })
+            .catch((error) => {
+                console.log(error);
             });
-    }, []);
+    };
 
     return (
         <div className="container">
@@ -53,6 +83,15 @@ function Home() {
                 <div className="col-md-10">
                     <div className="card">
                         <h1>タスク管理</h1>
+                        <Card className={classes.card}>
+                            <PostForm
+                                taskName={taskName}
+                                setTaskName={setTaskName}
+                                taskContent={taskContent}
+                                setTaskContent={setTaskContent}
+                                createPost={createPost}
+                            />
+                        </Card>
                         <Card className={classes.card}>
                             {/* テーブル部分の定義 */}
                             <TableContainer component={Paper}>
